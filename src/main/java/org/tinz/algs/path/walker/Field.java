@@ -161,9 +161,7 @@ public class Field {
 
     public static void main(String... args) throws Exception {
         BufferedImage bi = ImageIO.read(new File("field.bmp"));
-        Walker w = new Walker();
-        w.width = 10;
-        w.height = 10;
+        Walker w = new Walker(10, 10);
         Field f = new Field(bi, w);
         f.createBits();
         f.start = f.bits[0][f.bits[0].length-2];
@@ -171,14 +169,12 @@ public class Field {
         g.setColor(Color.gray);
         List<BitOfField> path = f.getPath();
         for (BitOfField bit : path){
-//            System.out.print(bit.id+" - ");
             g.fillOval(bit.x+3, bit.y+3, w.width-6, w.height-6);
         }
         Point2D[] points = new Point2D[path.size()];
         int i = 0;
         for (BitOfField v : path) {
             points[i] = new Point2D.Double(v.x, v.y);
-//            g.fillRect(v.x, v.y, v.x+20, v.y+20);
             i++;
         } 
         //

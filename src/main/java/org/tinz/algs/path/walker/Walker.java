@@ -13,4 +13,11 @@ public class Walker {
     int width;
     int height;
 
+    public Walker(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+    
+    
+
 }

@@ -325,25 +325,6 @@ public class LifeGame {
 
     }
 
-    public void printPopulation(Universe universe) {
-        for (int i = 0; i < universe.size; i++) {
-            int y = (i + 1) / universe.width;
-            int x = (i + 1) % universe.width;
-            System.out.print(universe.population[i].getStatus() == Status.LIVE ? "X" : "-");
-            if (x == 0) {
-                System.out.println("");
-            }
-        }
-    }
-
-    public void checkNulls(Cell[] population) {
-        for (int i = 0; i < population.length; i++) {
-            if (population[i] == null) {
-                System.out.println("id null = " + i);
-            }
-        }
-    }
-
     public static void main(String[] args) throws Exception {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -354,10 +335,8 @@ public class LifeGame {
                 final DrawPane dp = new DrawPane(
                         disp.getWidth() / s,
                         disp.getHeight() / s);
-                dp.setBackground(Color.BLACK);
-//                disp.setContentPane(dp);
+                dp.setBackground(dp.COLOR_BACKGROUD);
                 disp.add(dp, BorderLayout.CENTER);
-//                disp.add(jp, BorderLayout.CENTER);
                 disp.setVisible(true);
 
                 final Universe universe = new Universe(

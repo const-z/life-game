@@ -14,15 +14,13 @@ import org.tinz.algs.lifegame.LifeGame.*;
  */
 public class DrawPane extends javax.swing.JPanel {
 
-//    private LifeGame.Universe universe;
-    private static int fontSize = 10;
     public static int CELL_SIZE = 2;
     private int uniWidth;
     private int uniHeight;
     private Cell[] population;
-    private final Color COLOR_BACKGROUD = Color.WHITE;
-    private final Color COLOR_1_FACTION = Color.green;
-    private final Color COLOR_2_FACTION = Color.red;
+    public final Color COLOR_BACKGROUD = Color.black;
+    public final Color COLOR_1_FACTION = Color.green;
+    public final Color COLOR_2_FACTION = Color.red;
 
     /**
      * Creates new form DrawPane
