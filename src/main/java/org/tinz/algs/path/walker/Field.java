@@ -160,7 +160,7 @@ public class Field {
     }
 
     public static void main(String... args) throws Exception {
-        BufferedImage bi = ImageIO.read(new File("field2.bmp"));
+        BufferedImage bi = ImageIO.read(new File("field.bmp"));
         Walker w = new Walker();
         w.width = 10;
         w.height = 10;

@@ -8,6 +8,7 @@ import org.tinz.algs.utils.Display;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Frame;
+import java.util.Arrays;
 
 /**
  *
@@ -96,17 +97,21 @@ public class LifeGame {
 
         private int width;
         private int height;
-        private int depth;
-        Cell[] population;
+        private Cell[] population;
         private int size;
         private int countAlive = 0;
+        private Cell[][] populations;
 
-        public Universe(int width, int height, int depth) {
+        public Universe(int width, int height) {
             this.width = width;
-            this.height = height;
-            this.depth = depth;
-            size = width * height;
+//            this.height = height;
+            this.height = width;
+//            this.depth = depth;
+//            size = width * height;
+            size = width * width;
+
             population = new Cell[size];
+            populations = new Cell[3][size];
         }
 
         public int getCountAlive() {
@@ -120,7 +125,7 @@ public class LifeGame {
         public void createNewPopulation() {
             countAlive = 0;
             for (int i = 0; i < size; i++) {
-                Status st = Math.random() < 0.5 ? Status.LIVE : Status.DEAD;
+                Status st = Math.random() < 0.5d ? Status.LIVE : Status.DEAD;
                 int f = -1;
                 if (st == Status.LIVE) {
                     countAlive++;
@@ -132,7 +137,9 @@ public class LifeGame {
         }
 
         public void createNextPopulation() {
-            Cell[] tmp = new Cell[size];
+            Cell[] tmp
+                    = // population;
+                    new Cell[size];
             countAlive = 0;
             for (int i = 0; i < size; i++) {
                 tmp[i] = new Cell(population[i].status, population[i].faction, i, population[i].age);
@@ -146,8 +153,7 @@ public class LifeGame {
                         tmp[i].setFaction(1);
                     }
                     tmp[i].setStatus(Status.LIVE);
-                }
-                else if (tmp[i].getStatus() == Status.LIVE) {
+                } else if (tmp[i].getStatus() == Status.LIVE) {
                     tmp[i].setAge(tmp[i].getAge() + 1);
                     if ((near < 2) || (near > 3)) {
                         tmp[i].setStatus(Status.DEAD);
@@ -164,17 +170,32 @@ public class LifeGame {
             }
             population = new Cell[size];
             population = tmp;
+            if (populations[0] == null) {
+                populations[0] = tmp;
+            } else if (populations[1] == null) {
+                populations[1] = tmp;
+            } else if (populations[2] == null) {
+                populations[2] = tmp;
+            } else {
+                populations[0] = populations[1];
+                populations[1] = populations[2];
+                populations[2] = tmp;
+            }
         }
 
-        public boolean progressExists() {
+        public boolean progressExists() {            
+            if (populations[0]!=null && populations[2]!=null && 
+                    (Arrays.equals(populations[0], populations[2]) || Arrays.equals(populations[1], populations[2]))) {
+                return false;
+            }
             return true;
         }
 
         public int countLikeFactionNearCell(Cell cell, int faction) {
             int count = 0;
             int cellid = cell.id;
-            int rcellid = (cellid+1)%width;
-            int tmpid;            
+            int rcellid = (cellid + 1) % width;
+            int tmpid;
             if (rcellid != 1) {
                 tmpid = cellid - 1;
                 if ((tmpid >= 0) && (tmpid < size) && (population[tmpid].getFaction() == faction)) {
@@ -220,8 +241,8 @@ public class LifeGame {
         public int countLiveNearCell(Cell cell) {
             int count = 0;
             int cellid = cell.id;
-            int rcellid = (cellid+1)%width;
-            int tmpid;            
+            int rcellid = (cellid + 1) % width;
+            int tmpid;
             if (rcellid != 1) {
                 tmpid = cellid - 1;
                 if ((tmpid >= 0) && (tmpid < size) && (population[tmpid].status == Status.LIVE)) {
@@ -290,14 +311,6 @@ public class LifeGame {
             this.height = height;
         }
 
-        public int getDepth() {
-            return depth;
-        }
-
-        public void setDepth(int depth) {
-            this.depth = depth;
-        }
-
         public Cell[] getPopulation() {
             return population;
         }
@@ -309,10 +322,10 @@ public class LifeGame {
         public int getSize() {
             return size;
         }
-        
+
     }
 
-    public static void printPopulation(Universe universe) {
+    public void printPopulation(Universe universe) {
         for (int i = 0; i < universe.size; i++) {
             int y = (i + 1) / universe.width;
             int x = (i + 1) % universe.width;
@@ -322,11 +335,11 @@ public class LifeGame {
             }
         }
     }
-    
-    public static void checkNulls(Cell[] population){
-        for (int i=0; i<population.length; i++){
-            if (population[i]==null){
-                System.out.println("id null = "+i);
+
+    public void checkNulls(Cell[] population) {
+        for (int i = 0; i < population.length; i++) {
+            if (population[i] == null) {
+                System.out.println("id null = " + i);
             }
         }
     }
@@ -335,8 +348,8 @@ public class LifeGame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 final Display disp = new Display();
-                disp.setSize(1080, 900);
-                disp.setLocationRelativeTo(null);                
+                disp.setSize(500, 500);
+                disp.setLocationRelativeTo(null);
                 int s = DrawPane.CELL_SIZE;
                 final DrawPane dp = new DrawPane(
                         disp.getWidth() / s,
@@ -348,29 +361,17 @@ public class LifeGame {
                 disp.setVisible(true);
 
                 final Universe universe = new Universe(
-                        //                        disp.getContentPane().getWidth() / s,
-                        //                        disp.getContentPane().getHeight() / s,
-                        //                        0);
-                        //                20,9,0);
                         disp.getWidth() / s,
-                        disp.getHeight() / s, 0);
+                        disp.getHeight() / s);
                 universe.createNewPopulation();
                 dp.setPopulation(universe.population);
-
-//                dp.setUniverse(universe);
-
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-//                        int i = 0;
                         while (true) {
-
-//                            i++;
-//                            System.out.println("" + i);
                             try {
                                 Thread.sleep(10);
                             } catch (InterruptedException ex) {
-//                                Logger.getLogger(Display.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             universe.createNextPopulation();
                             if (disp.getState() != Frame.ICONIFIED) {
@@ -379,7 +380,7 @@ public class LifeGame {
                             }
                             if (!universe.progressExists()) {
                                 System.out.println("generation complete");
-                                break;
+                                return;
                             }
                         }
                     }
