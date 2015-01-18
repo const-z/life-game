@@ -329,7 +329,7 @@ public class LifeGame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 final Display disp = new Display();
-                disp.setSize(500, 500);
+                disp.setSize(1024, 768);
                 disp.setLocationRelativeTo(null);
                 int s = DrawPane.CELL_SIZE;
                 final DrawPane dp = new DrawPane(
